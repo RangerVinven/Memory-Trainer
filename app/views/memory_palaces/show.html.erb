@@ -1,25 +1,92 @@
 <div class="container">
-  <h1><%= @memory_palace.name %></h1>
-  <p><%= @memory_palace.description %></p>
+  <div class="header-row">
+    <div>
+      <h1 style="margin-bottom: 5px;"><%= @memory_palace.name %></h1>
+      <p style="color: #64748B; margin: 0;"><%= @memory_palace.description %></p>
+    </div>
+    <div>
+      <%= link_to 'Edit Palace', edit_memory_palace_path(@memory_palace), class: "btn-secondary" %>
+      <%= link_to 'Back', memory_palaces_path, class: "btn-secondary" %>
+    </div>
+  </div>
 
-  <h2>Loci</h2>
-  <ol>
-    <% @memory_palace.loci.each do |locus| %>
-      <li>
-        <%= locus.description %>
-        <%= button_to "Remove", memory_palace_locus_path(@memory_palace, locus), method: :delete, form: { style: "display:inline" } %>
-      </li>
-    <% end %>
-  </ol>
+  <div class="grid" style="grid-template-columns: 2fr 1fr; align-items: start;">
+    
+    <!-- Loci List -->
+    <div class="card">
+      <h3>Route Points (Loci)</h3>
+      <div class="loci-list">
+        <% @memory_palace.loci.each_with_index do |locus, index| %>
+          <div class="locus-item">
+            <span class="locus-index"><%= index + 1 %></span>
+            <div class="locus-content">
+              <strong><%= locus.name.presence || "Location #{index + 1}" %></strong>
+              <p><%= locus.description %></p>
+            </div>
+            <%= button_to memory_palace_locus_path(@memory_palace, locus), method: :delete, class: "icon-btn delete-btn" do %>
+              <i class="fas fa-trash"></i>
+            <% end %>
+          </div>
+        <% end %>
+        
+        <% if @memory_palace.loci.empty? %>
+          <p class="empty-msg">No locations added yet.</p>
+        <% end %>
+      </div>
+    </div>
 
-  <h3>Add Locus</h3>
-  <%= form_with model: [@memory_palace, @locus], local: true do |form| %>
-    <%= form.text_field :description, placeholder: "Description", required: true %>
-    <%= form.submit "Add" %>
-  <% end %>
+    <!-- Add Locus Form -->
+    <div class="card sticky-form">
+      <h3>Add Location</h3>
+      <%= form_with model: [@memory_palace, @locus], local: true do |form| %>
+        <div class="field-group">
+          <%= form.label :name, "Location Name" %>
+          <%= form.text_field :name, placeholder: "e.g. Front Door" %>
+        </div>
 
-  <div style="margin-top: 20px;">
-    <%= link_to 'Edit', edit_memory_palace_path(@memory_palace) %> |
-    <%= link_to 'Back', memory_palaces_path %>
+        <div class="field-group">
+          <%= form.label :description, "Image / Description" %>
+          <%= form.text_area :description, placeholder: "Describe the mental image...", rows: 3 %>
+        </div>
+
+        <%= form.submit "Add Locus", class: "btn-primary large" %>
+      <% end %>
+    </div>
   </div>
 </div>
+
+<style>
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+  
+  .loci-list { display: flex; flex-direction: column; gap: 15px; }
+  
+  .locus-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+  }
+  
+  .locus-index {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    width: 40px;
+    text-align: center;
+    margin-right: 15px;
+  }
+  
+  .locus-content { flex: 1; }
+  .locus-content strong { display: block; color: #334155; }
+  .locus-content p { margin: 2px 0 0; font-size: 0.9rem; color: #64748B; }
+  
+  .icon-btn { border: none; background: none; cursor: pointer; padding: 8px; border-radius: 4px; transition: all 0.2s; }
+  .delete-btn { color: #CBD5E1; }
+  .delete-btn:hover { background: #FEF2F2; color: #EF4444; }
+  
+  .empty-msg { text-align: center; color: #94A3B8; font-style: italic; padding: 20px; }
+  
+  .sticky-form { position: sticky; top: 20px; }
+</style>

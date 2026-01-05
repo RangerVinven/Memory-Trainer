@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_05_192450) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_05_195617) do
   create_table "loci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description"
     t.integer "memory_palace_id", null: false
+    t.string "name"
     t.integer "position"
     t.datetime "updated_at", null: false
     t.index ["memory_palace_id"], name: "index_loci_on_memory_palace_id"
@@ -40,6 +41,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_05_192450) do
     t.integer "user_id", null: false
     t.index ["user_id", "suit", "rank"], name: "index_pao_cards_on_user_id_and_suit_and_rank", unique: true
     t.index ["user_id"], name: "index_pao_cards_on_user_id"
+  end
+
+  create_table "pao_digits", force: :cascade do |t|
+    t.string "action"
+    t.datetime "created_at", null: false
+    t.integer "number"
+    t.string "object"
+    t.string "person"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_pao_digits_on_user_id"
   end
 
   create_table "pao_numbers", force: :cascade do |t|
@@ -85,6 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_05_192450) do
   add_foreign_key "loci", "memory_palaces"
   add_foreign_key "memory_palaces", "users"
   add_foreign_key "pao_cards", "users"
+  add_foreign_key "pao_digits", "users"
   add_foreign_key "pao_numbers", "users"
   add_foreign_key "training_sessions", "users"
 end

@@ -1,7 +1,12 @@
-<div class="container">
-  <h1>PAO System (Cards)</h1>
+<div class="container" data-controller="autosave">
+  <div class="header-row">
+    <%= link_to "Back", root_path, class: "btn-secondary" %>
+    <h1>PAO System (Cards)</h1>
+    <span class="status-msg" data-autosave-target="status"></span>
+    <button class="btn-primary" onclick="document.querySelector('form').requestSubmit()">Save Changes</button>
+  </div>
 
-  <%= form_with url: bulk_update_pao_cards_path, method: :patch, local: true do |form| %>
+  <%= form_with url: bulk_update_pao_cards_path, method: :patch, data: { action: "change->autosave#change ajax:success->autosave#onPostSuccess" } do |form| %>
     <table>
       <thead>
         <tr>
@@ -15,7 +20,7 @@
         <% @pao_cards.each do |pao| %>
           <%= fields_for "pao_cards[#{pao.id}]", pao do |f| %>
             <tr>
-              <td><%= pao.rank.titleize %> of <%= pao.suit.titleize %></td>
+              <td><%= render_card("#{pao.rank[0].upcase}#{pao.suit[0].upcase}", width: 40, height: 56) %></td>
               <td><%= f.text_field :person %></td>
               <td><%= f.text_field :action %></td>
               <td><%= f.text_field :object %></td>
@@ -24,16 +29,32 @@
         <% end %>
       </tbody>
     </table>
-    <div class="actions">
-      <%= form.submit "Save Changes" %>
-    </div>
-    <%= link_to "Back", root_path %>
   <% end %>
 </div>
 
+<script>
+  window.addEventListener("beforeunload", function (e) {
+    // Basic detection for unsaved changes if controller is dirty
+    const el = document.querySelector('[data-controller="autosave"]');
+    if(el) {
+       // Accessing the controller instance directly is tricky in vanilla JS without Stimulus API
+       // So we rely on the controller's own beforeUnload implementation if possible
+       // But Stimulus controllers don't automatically bind to window.beforeunload unless we add it.
+       // We added it in the controller code!
+    }
+  });
+</script>
+
 <style>
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-  input[type="text"] { width: 95%; padding: 5px; }
-  .actions { margin-top: 20px; }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .status-msg {
+    color: var(--color-text-light);
+    font-style: italic;
+    font-weight: 600;
+  }
 </style>

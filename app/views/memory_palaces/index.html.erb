@@ -1,19 +1,46 @@
 <div class="container">
-  <h1>Memory Palaces</h1>
-  <%= link_to 'New Memory Palace', new_memory_palace_path, class: "button" %>
-  <ul>
+  <div class="header-row">
+    <h1>Memory Palaces</h1>
+    <%= link_to 'Create New Palace', new_memory_palace_path, class: "btn-primary" %>
+  </div>
+
+  <div class="grid">
     <% @memory_palaces.each do |mp| %>
-      <li>
-        <%= link_to mp.name, mp %>
-        <span class="description"><%= mp.description %></span>
-      </li>
+      <div class="card palace-card">
+        <div class="card-header">
+          <h3><%= mp.name %></h3>
+          <span class="locus-count"><%= mp.loci.count %> Loci</span>
+        </div>
+        <p><%= mp.description.presence || "No description provided." %></p>
+        
+        <div class="card-actions">
+          <%= link_to "Open", mp, class: "btn-secondary" %>
+          <%= link_to "Edit", edit_memory_palace_path(mp), class: "btn-secondary" %>
+          <%= button_to "Delete", mp, method: :delete, class: "btn-danger", form: { style: "display:inline" } %>
+        </div>
+      </div>
     <% end %>
-  </ul>
+  </div>
+  
+  <% if @memory_palaces.empty? %>
+    <div class="empty-state">
+      <p>You haven't created any Memory Palaces yet.</p>
+      <%= link_to "Create Your First Palace", new_memory_palace_path, class: "cta-button" %>
+    </div>
+  <% end %>
 </div>
 
 <style>
-  .button { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #eee; text-decoration: none; border: 1px solid #ccc; }
-  ul { list-style: none; padding: 0; }
-  li { padding: 10px; border-bottom: 1px solid #eee; }
-  .description { color: #666; font-size: 0.9em; margin-left: 10px; }
+  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+  
+  .palace-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; }
+  
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .locus-count { background: #E2E8F0; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; color: #475569; }
+  
+  .card-actions { display: flex; gap: 10px; margin-top: auto; }
+  .btn-danger { background: none; border: 1px solid #FECACA; color: #EF4444; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+  .btn-danger:hover { background: #FEF2F2; }
+  
+  .empty-state { text-align: center; padding: 50px; color: #64748B; }
 </style>

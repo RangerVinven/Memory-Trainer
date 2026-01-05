@@ -1,11 +1,48 @@
-<div class="container">
-  <h1>PAO System (00-99)</h1>
+<div class="container" data-controller="autosave">
+  <div class="header-row">
+    <%= link_to "Back", root_path, class: "btn-secondary" %>
+    <h1>PAO System (Numbers)</h1>
+    <span class="status-msg" data-autosave-target="status"></span>
+    <!-- Save button is mostly visual now as autosave handles it, but keeps it for explicit action -->
+    <button class="btn-primary" onclick="document.querySelector('form').requestSubmit()">Save Changes</button>
+  </div>
 
-  <%= form_with url: bulk_update_pao_numbers_path, method: :patch, local: true do |form| %>
+  <!-- Single Digits Form -->
+  <h3>Single Digits (0-9)</h3>
+  <%= form_with url: bulk_update_pao_digits_path, method: :patch, data: { action: "change->autosave#change ajax:success->autosave#onPostSuccess" } do |form| %>
     <table>
       <thead>
         <tr>
-          <th>Number</th>
+          <th>#</th>
+          <th>Person</th>
+          <th>Action</th>
+          <th>Object</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @pao_digits.each do |pao| %>
+          <%= fields_for "pao_digits[#{pao.id}]", pao do |f| %>
+            <tr>
+              <td><%= pao.number %></td>
+              <td><%= f.text_field :person %></td>
+              <td><%= f.text_field :action %></td>
+              <td><%= f.text_field :object %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <br><br>
+
+  <!-- Double Digits Form -->
+  <h3>Double Digits (00-99)</h3>
+  <%= form_with url: bulk_update_pao_numbers_path, method: :patch, data: { action: "change->autosave#change ajax:success->autosave#onPostSuccess" } do |form| %>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
           <th>Person</th>
           <th>Action</th>
           <th>Object</th>
@@ -24,16 +61,30 @@
         <% end %>
       </tbody>
     </table>
-    <div class="actions">
-      <%= form.submit "Save Changes" %>
-    </div>
-  <%= link_to "Back", root_path %>
   <% end %>
 </div>
 
+<script>
+  window.addEventListener("beforeunload", function (e) {
+    const controller = document.querySelector('[data-controller="autosave"]').autosave;
+    if (controller && controller.isDirty) {
+      const confirmationMessage = 'You have unsaved changes. Are you sure you want to leave?';
+      (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+      return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+    }
+  });
+</script>
+
 <style>
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-  input[type="text"] { width: 95%; padding: 5px; }
-  .actions { margin-top: 20px; }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .status-msg {
+    color: var(--color-text-light);
+    font-style: italic;
+    font-weight: 600;
+  }
 </style>

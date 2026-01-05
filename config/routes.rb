@@ -5,6 +5,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :pao_digits, only: [] do
+    collection do
+      patch :bulk_update
+    end
+  end
+
   resources :pao_cards, only: [:index] do
     collection do
       patch :bulk_update

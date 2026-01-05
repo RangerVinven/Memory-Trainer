@@ -1,20 +1,22 @@
-<h1>Edit Memory Palace</h1>
+<div class="container" style="max-width: 600px;">
+  <h1>Edit Memory Palace</h1>
 
-<%= form_with model: @memory_palace, local: true do |form| %>
-  <div>
-    <%= form.label :name %><br>
-    <%= form.text_field :name %>
+  <div class="card">
+    <%= form_with model: @memory_palace, local: true do |form| %>
+      <div class="field-group">
+        <%= form.label :name %>
+        <%= form.text_field :name %>
+      </div>
+
+      <div class="field-group">
+        <%= form.label :description %>
+        <%= form.text_area :description, rows: 4 %>
+      </div>
+
+      <div class="actions" style="margin-top: 20px; text-align: right;">
+        <%= link_to 'Cancel', @memory_palace, class: "btn-secondary" %>
+        <%= form.submit "Update Palace", class: "btn-primary" %>
+      </div>
+    <% end %>
   </div>
-
-  <div>
-    <%= form.label :description %><br>
-    <%= form.text_area :description %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
-
-<%= link_to 'Show', @memory_palace %> |
-<%= link_to 'Back', memory_palaces_path %>
+</div>

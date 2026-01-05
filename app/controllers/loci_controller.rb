@@ -30,6 +30,6 @@ class LociController < ApplicationController
   end
 
   def locus_params
-    params.require(:locus).permit(:description)
+    params.require(:locus).permit(:name, :description)
   end
 end
