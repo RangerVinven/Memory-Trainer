@@ -1,0 +1,139 @@
+<div class="recall-interface" data-controller="recall" data-recall-count-value="<%= session.item_count %>">
+  
+  <!-- The Hidden Input Form -->
+  <%= form_with model: session, method: :patch, local: true do |f| %>
+    <%= f.hidden_field :recall_data, data: { recall_target: "input" } %>
+    
+    <div class="top-bar">
+      <h3>Fill the Slots</h3>
+      <%= f.submit "Submit Recall", class: "btn-primary" %>
+    </div>
+  <% end %>
+
+  <!-- The Grid -->
+  <div class="card-grid">
+    <% session.item_count.times do |i| %>
+      <div class="card-slot" 
+           data-recall-target="slot" 
+           data-index="<%= i %>" 
+           data-action="click->recall#clickSlot">
+        <!-- Card appears here -->
+      </div>
+    <% end %>
+  </div>
+
+  <!-- The Keyboard -->
+  <div class="keyboard">
+    <div class="ranks">
+      <% %w[2 3 4 5 6 7 8 9 10 J Q K A].each do |rank| %>
+        <div class="key-column">
+          <div class="rank-label"><%= rank %></div>
+          <div class="suits">
+            <% %w[S H D C].each do |suit| %>
+              <% 
+                 color = (suit == 'H' || suit == 'D') ? 'red' : 'black'
+                 icon = case suit; when 'S' then '♠'; when 'H' then '♥'; when 'D' then '♦'; when 'C' then '♣'; end
+              %>
+              <button type="button" 
+                      class="key-btn <%= color %>"
+                      data-action="recall#addCard"
+                      data-rank="<%= rank %>"
+                      data-suit="<%= suit %>">
+                <%= icon %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="actions">
+      <button type="button" class="btn-secondary" data-action="recall#clearSlot">Clear Slot</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  
+  .card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+    justify-content: center;
+  }
+
+  .card-slot {
+    width: 60px;
+    height: 90px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .card-slot.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+  }
+  .card-slot.filled {
+    border-style: solid;
+    border-color: #94a3b8;
+  }
+
+  /* Keyboard */
+  .keyboard {
+    position: fixed;
+    bottom: 0; left: var(--sidebar-width); right: 0;
+    background: white;
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    z-index: 50;
+  }
+  @media (max-width: 768px) { .keyboard { left: 0; } }
+
+  .ranks {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  
+  .key-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .rank-label { font-weight: bold; color: #64748b; font-size: 0.9rem; margin-bottom: 4px; }
+  
+  .key-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+  }
+  .key-btn:hover { background: #f1f5f9; }
+  .key-btn.red { color: #dc2626; }
+  .key-btn.black { color: #1e293b; }
+  
+  .actions { text-align: center; margin-top: 10px; }
+  
+  /* Make main content pad for keyboard */
+  .main-content { padding-bottom: 250px; }
+</style>

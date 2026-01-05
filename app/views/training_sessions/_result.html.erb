@@ -1,0 +1,33 @@
+<h2>Results</h2>
+<div class="result-summary">
+  <h3>Accuracy: <span style="<%= session.accuracy_percentage == 100 ? 'color:green' : 'color:red' %>"><%= session.accuracy_percentage.round(2) %>%</span></h3>
+  <p>Time: <%= session.duration_seconds %> seconds</p>
+</div>
+
+<h3>Original</h3>
+<div class="data-box"><%= session.training_data %></div>
+
+<h3>Your Recall</h3>
+<div class="data-box"><%= session.recall_data %></div>
+
+<div style="margin-top: 30px;">
+  <%= link_to "Start New Session", new_training_session_path, class: "button" %>
+  <%= link_to "Back to History", training_sessions_path %>
+</div>
+
+<style>
+  .data-box {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    word-wrap: break-word;
+  }
+  .button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+</style>

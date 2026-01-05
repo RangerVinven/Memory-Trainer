@@ -1,0 +1,20 @@
+<% if session.training_type == 'card' %>
+  <%= render 'recall_card', session: session %>
+<% else %>
+  <div class="recall-interface" style="max-width: 600px; margin: 0 auto;">
+    <h2>Recall Phase</h2>
+    <p>Enter the numbers you memorized in order.</p>
+
+    <%= form_with model: session, method: :patch, local: true do |f| %>
+      <div class="field-group">
+        <%= f.label :recall_data, "Your Recall Input" %>
+        <%= f.text_area :recall_data, rows: 10, placeholder: "e.g. 5928301..." %>
+        <small class="hint">Just type the digits continuously.</small>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <%= f.submit "Check Results", class: "btn-primary large" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

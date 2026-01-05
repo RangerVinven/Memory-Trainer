@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Memory Trainer" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Memory Trainer">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body data-controller="mobile-menu">
+    <div class="app-wrapper">
+      
+      <!-- Mobile Header -->
+      <header class="mobile-header">
+        <button class="menu-toggle" data-action="click->mobile-menu#toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <span class="brand">Memory Wheel</span>
+        <div class="mobile-spacer"></div> <!-- Balance the header -->
+      </header>
+
+      <!-- Overlay for mobile -->
+      <div class="sidebar-overlay hidden" 
+           data-mobile-menu-target="overlay" 
+           data-action="click->mobile-menu#close"></div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" data-mobile-menu-target="sidebar">
+        <div class="sidebar-header">
+          <i class="fas fa-dharmachakra brand-icon"></i>
+          <h1>Memory Wheel</h1>
+        </div>
+
+        <nav class="sidebar-nav">
+          <% if user_signed_in? %>
+            <div class="nav-section">
+              <span class="nav-label">Training</span>
+              <%= link_to root_path, class: "nav-item #{'active' if current_page?(root_path)}" do %>
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              <% end %>
+              <%= link_to new_training_session_path, class: "nav-item #{'active' if current_page?(new_training_session_path)}" do %>
+                <i class="fas fa-play-circle"></i> Start Training
+              <% end %>
+              <%= link_to training_sessions_path, class: "nav-item #{'active' if current_page?(training_sessions_path)}" do %>
+                <i class="fas fa-history"></i> History
+              <% end %>
+            </div>
+
+            <div class="nav-section">
+              <span class="nav-label">Systems</span>
+              <%= link_to pao_numbers_path, class: "nav-item #{'active' if current_page?(pao_numbers_path)}" do %>
+                <i class="fas fa-sort-numeric-up"></i> PAO Numbers
+              <% end %>
+              <%= link_to pao_cards_path, class: "nav-item #{'active' if current_page?(pao_cards_path)}" do %>
+                <i class="fas fa-clone"></i> PAO Cards
+              <% end %>
+              <%= link_to memory_palaces_path, class: "nav-item #{'active' if current_page?(memory_palaces_path)}" do %>
+                <i class="fas fa-dungeon"></i> Palaces
+              <% end %>
+            </div>
+
+            <div class="nav-section bottom">
+              <%= button_to destroy_user_session_path, method: :delete, class: "nav-item logout" do %>
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+              <% end %>
+            </div>
+          <% else %>
+            <div class="nav-section">
+              <%= link_to new_user_session_path, class: "nav-item" do %>
+                <i class="fas fa-sign-in-alt"></i> Login
+              <% end %>
+              <%= link_to new_user_registration_path, class: "nav-item" do %>
+                <i class="fas fa-user-plus"></i> Sign Up
+              <% end %>
+            </div>
+          <% end %>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <% if notice %>
+          <div class="flash notice"><i class="fas fa-info-circle"></i> <%= notice %></div>
+        <% end %>
+        <% if alert %>
+          <div class="flash alert"><i class="fas fa-exclamation-triangle"></i> <%= alert %></div>
+        <% end %>
+        
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

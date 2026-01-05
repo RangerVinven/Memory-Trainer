@@ -1,0 +1,9 @@
+<div class="container">
+  <% if @session.memorizing? %>
+    <%= render 'memorize', session: @session %>
+  <% elsif @session.recalling? %>
+    <%= render 'recall', session: @session %>
+  <% else %>
+    <%= render 'result', session: @session %>
+  <% end %>
+</div>

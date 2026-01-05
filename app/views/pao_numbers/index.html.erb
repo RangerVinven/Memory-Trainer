@@ -1,0 +1,39 @@
+<div class="container">
+  <h1>PAO System (00-99)</h1>
+
+  <%= form_with url: bulk_update_pao_numbers_path, method: :patch, local: true do |form| %>
+    <table>
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Person</th>
+          <th>Action</th>
+          <th>Object</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @pao_numbers.each do |pao| %>
+          <%= fields_for "pao_numbers[#{pao.id}]", pao do |f| %>
+            <tr>
+              <td><%= pao.number.to_s.rjust(2, '0') %></td>
+              <td><%= f.text_field :person %></td>
+              <td><%= f.text_field :action %></td>
+              <td><%= f.text_field :object %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="actions">
+      <%= form.submit "Save Changes" %>
+    </div>
+  <%= link_to "Back", root_path %>
+  <% end %>
+</div>
+
+<style>
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+  input[type="text"] { width: 95%; padding: 5px; }
+  .actions { margin-top: 20px; }
+</style>

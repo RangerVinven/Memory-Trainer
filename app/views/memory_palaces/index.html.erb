@@ -1,0 +1,19 @@
+<div class="container">
+  <h1>Memory Palaces</h1>
+  <%= link_to 'New Memory Palace', new_memory_palace_path, class: "button" %>
+  <ul>
+    <% @memory_palaces.each do |mp| %>
+      <li>
+        <%= link_to mp.name, mp %>
+        <span class="description"><%= mp.description %></span>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<style>
+  .button { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #eee; text-decoration: none; border: 1px solid #ccc; }
+  ul { list-style: none; padding: 0; }
+  li { padding: 10px; border-bottom: 1px solid #eee; }
+  .description { color: #666; font-size: 0.9em; margin-left: 10px; }
+</style>

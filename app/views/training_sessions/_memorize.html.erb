@@ -1,0 +1,102 @@
+<div class="memorize-container" 
+     data-controller="training" 
+     data-training-type-value="<%= session.training_type %>"
+     data-training-data-value="<%= session.training_data %>"
+     data-training-batch-size-value="<%= session.batch_size %>">
+
+  <div class="training-display-area">
+    <% 
+       items = session.training_type == 'number' ? session.training_data.chars : session.training_data.split(',')
+       batches = items.each_slice(session.batch_size).to_a
+    %>
+
+    <% batches.each_with_index do |batch, index| %>
+      <div class="batch <%= 'hidden' if index > 0 %>" data-training-target="display">
+        <% if session.training_type == 'card' %>
+          <div class="cards-wrapper">
+            <% batch.each do |card_code| %>
+              <%= render_card(card_code) %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="numbers-wrapper">
+            <%= batch.join %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="controls">
+    <p class="instruction">Press <span class="key-hint">Space</span> for next</p>
+    <div class="progress" data-training-target="progress">Batch 1 / <%= batches.size %></div>
+    
+    <button class="btn-primary" data-action="training#next">Next Batch</button>
+    
+    <%= form_with model: session, method: :patch, local: true, data: { training_target: "finishForm" } do |f| %>
+      <input type="hidden" name="duration" id="duration-input" data-training-target="durationInput">
+      <button type="button" class="btn-secondary" data-action="training#finish">Finish Early</button>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  .memorize-container {
+    text-align: center;
+    padding: 20px;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .training-display-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hidden { display: none !important; }
+
+  .numbers-wrapper {
+    font-size: 4rem;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: var(--color-primary);
+    letter-spacing: 5px;
+  }
+
+  .cards-wrapper {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .controls {
+    margin-top: 30px;
+  }
+
+  .key-hint {
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+  }
+  
+  .instruction { color: #666; margin-bottom: 10px; }
+  
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-text-light);
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+</style>

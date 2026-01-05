@@ -1,0 +1,31 @@
+<h1>Start New Training</h1>
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+  <%= form_with model: @session, local: true do |f| %>
+    <div class="field-group">
+      <%= f.label :training_type %>
+      <%= f.select :training_type, [['Number', 'number'], ['Card', 'card']], {}, { class: "form-control" } %>
+    </div>
+    
+    <div class="field-group">
+      <%= f.label :item_count, "Total Items (Numbers or Cards)" %>
+      <%= f.number_field :item_count, value: 20, class: "form-control" %>
+    </div>
+
+    <div class="field-group">
+      <%= f.label :batch_size, "Batch Size (Items per screen)" %>
+      <%= f.number_field :batch_size, value: 5, class: "form-control", min: 1 %>
+      <small>How many items do you want to see at once?</small>
+    </div>
+
+    <div style="margin-top: 20px; text-align: center;">
+      <%= f.submit "Begin Training", class: "btn-primary large" %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .field-group { margin-bottom: 20px; text-align: left; }
+  .field-group label { font-weight: 600; color: var(--color-primary); display: block; margin-bottom: 5px; }
+  .large { width: 100%; font-size: 1.1rem; padding: 12px; }
+  small { color: #888; }
+</style>

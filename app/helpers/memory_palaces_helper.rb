@@ -1,0 +1,2 @@
+module MemoryPalacesHelper
+end

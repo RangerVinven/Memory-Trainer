@@ -1,0 +1,41 @@
+<div class="container">
+  <h1>Training History</h1>
+  <%= link_to "New Session", new_training_session_path, class: "button" %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Count</th>
+        <th>Time</th>
+        <th>Accuracy</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sessions.each do |session| %>
+        <tr>
+          <td><%= session.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= session.training_type.titleize %></td>
+          <td><%= session.item_count %></td>
+          <td><%= session.duration_seconds %>s</td>
+          <td>
+            <% if session.completed? %>
+              <%= session.accuracy_percentage&.round(1) %>%
+            <% else %>
+              Incomplete
+            <% end %>
+          </td>
+          <td><%= link_to "View", session %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<style>
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+  .button { padding: 5px 10px; background: #eee; border: 1px solid #ccc; text-decoration: none; }
+</style>

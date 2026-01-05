@@ -1,0 +1,25 @@
+<div class="container">
+  <h1><%= @memory_palace.name %></h1>
+  <p><%= @memory_palace.description %></p>
+
+  <h2>Loci</h2>
+  <ol>
+    <% @memory_palace.loci.each do |locus| %>
+      <li>
+        <%= locus.description %>
+        <%= button_to "Remove", memory_palace_locus_path(@memory_palace, locus), method: :delete, form: { style: "display:inline" } %>
+      </li>
+    <% end %>
+  </ol>
+
+  <h3>Add Locus</h3>
+  <%= form_with model: [@memory_palace, @locus], local: true do |form| %>
+    <%= form.text_field :description, placeholder: "Description", required: true %>
+    <%= form.submit "Add" %>
+  <% end %>
+
+  <div style="margin-top: 20px;">
+    <%= link_to 'Edit', edit_memory_palace_path(@memory_palace) %> |
+    <%= link_to 'Back', memory_palaces_path %>
+  </div>
+</div>
