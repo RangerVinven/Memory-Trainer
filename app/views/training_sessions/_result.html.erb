@@ -8,19 +8,17 @@
   <div class="results-grid">
     <% 
        correct_cards = session.training_data.split(',')
-       # Recall data might be empty or partial
        recalled_cards = (session.recall_data || "").split(',')
     %>
     
     <% correct_cards.each_with_index do |correct, i| %>
       <% 
          guessed = recalled_cards[i]
-         # Normalize for comparison
          is_correct = guessed && correct && (guessed.upcase == correct.upcase)
          bg_class = is_correct ? "correct-bg" : "incorrect-bg"
       %>
       <div class="result-pair <%= bg_class %>">
-        <div class="card-label">Correct</div>
+        <div class="card-label">Actual</div>
         <%= render_card(correct, width: 80, height: 112) %>
         
         <div class="card-stack-spacer"></div>
@@ -36,17 +34,40 @@
   </div>
 
 <% else %>
-  <!-- Number Results (Unchanged) -->
-  <h3>Original</h3>
-  <div class="data-box"><%= session.training_data %></div>
-
-  <h3>Your Recall</h3>
-  <div class="data-box"><%= session.recall_data %></div>
+  <!-- Number Results -->
+  <div class="results-grid">
+    <% 
+       correct_nums = session.training_data.chars
+       # Simple sanitization to match digits
+       recalled_nums = (session.recall_data || "").gsub(/[^0-9]/, '').chars
+    %>
+    
+    <% correct_nums.each_with_index do |correct, i| %>
+      <% 
+         guessed = recalled_nums[i]
+         is_correct = guessed == correct
+         bg_class = is_correct ? "correct-bg" : "incorrect-bg"
+      %>
+      <div class="result-pair <%= bg_class %>">
+        <div class="card-label">Actual</div>
+        <div class="number-card"><%= correct %></div>
+        
+        <div class="card-stack-spacer"></div>
+        
+        <div class="card-label">You</div>
+        <% if guessed.present? %>
+          <div class="number-card" style="opacity: 0.7;"><%= guessed %></div>
+        <% else %>
+          <div class="missing-card number-missing">Missed</div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 <% end %>
 
 <div style="margin-top: 40px; text-align: center;">
-  <%= link_to "Start New Session", new_training_session_path, class: "btn-primary" %>
   <%= link_to "Back to History", training_sessions_path, class: "btn-secondary" %>
+  <%= link_to "Start New Session", new_training_session_path, class: "btn-primary" %>
 </div>
 
 <style>
@@ -110,6 +131,27 @@
   }
 
   /* Number Styles */
+  .number-card {
+    width: 60px;
+    height: 80px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: monospace;
+    color: #333;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+  }
+  
+  .number-missing {
+    width: 60px;
+    height: 80px;
+  }
+
   .data-box {
     padding: 15px;
     background: white;
