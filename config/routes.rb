@@ -19,8 +19,13 @@ Rails.application.routes.draw do
 
   resources :memory_palaces do
     resources :loci, only: [:create, :update, :destroy] do
+      collection do
+        patch :sort
+      end
       member do
         patch :move
+        patch :move_up
+        patch :move_down
       end
     end
   end

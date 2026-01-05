@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" data-controller="reorder" data-reorder-url-value="<%= sort_memory_palace_loci_path(@memory_palace) %>">
   <div class="header-row">
     <div>
       <h1 style="margin-bottom: 5px;"><%= @memory_palace.name %></h1>
@@ -14,7 +14,11 @@
     
     <!-- Loci List -->
     <div class="card">
-      <h3>Route Points (Loci)</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Locations</h3>
+        <button class="btn-secondary" data-action="reorder#open">Reorder</button>
+      </div>
+
       <div class="loci-list">
         <% @memory_palace.loci.each_with_index do |locus, index| %>
           <div class="locus-item">
@@ -23,7 +27,7 @@
               <strong><%= locus.name.presence || "Location #{index + 1}" %></strong>
               <p><%= locus.description %></p>
             </div>
-            <%= button_to memory_palace_locus_path(@memory_palace, locus), method: :delete, class: "icon-btn delete-btn" do %>
+            <%= button_to memory_palace_locus_path(@memory_palace, locus), method: :delete, class: "icon-btn delete-btn", data: { turbo_confirm: "Are you sure?" } do %>
               <i class="fas fa-trash"></i>
             <% end %>
           </div>
@@ -51,6 +55,30 @@
 
         <%= form.submit "Add Locus", class: "btn-primary large" %>
       <% end %>
+    </div>
+  </div>
+
+  <!-- Reorder Modal -->
+  <div class="sidebar-overlay hidden" data-reorder-target="modal">
+    <div class="modal-card">
+      <h3 style="margin-bottom: 20px;">Reorder Locations</h3>
+      
+      <div class="reorder-list" data-reorder-target="list">
+        <% @memory_palace.loci.order(:position).each do |locus| %>
+          <div class="reorder-item" data-reorder-target="item" data-id="<%= locus.id %>">
+            <div class="reorder-controls">
+              <button class="move-btn" data-action="reorder#up"><i class="fas fa-chevron-up"></i></button>
+              <button class="move-btn" data-action="reorder#down"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <span><%= locus.name.presence || "Location" %></span>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" data-action="reorder#close">Cancel</button>
+        <button class="btn-primary" data-action="reorder#save">Save Order</button>
+      </div>
     </div>
   </div>
 </div>
@@ -89,4 +117,59 @@
   .empty-msg { text-align: center; color: #94A3B8; font-style: italic; padding: 20px; }
   
   .sticky-form { position: sticky; top: 20px; }
+
+  /* Modal Styles */
+  .modal-card {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    z-index: 101;
+  }
+
+  .reorder-list {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .reorder-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #F1F5F9;
+    background: white;
+  }
+  .reorder-item:last-child { border-bottom: none; }
+
+  .reorder-controls {
+    display: flex;
+    flex-direction: column;
+    margin-right: 15px;
+  }
+  
+  .move-btn {
+    background: none; border: none; cursor: pointer; color: #94A3B8; padding: 2px;
+  }
+  .move-btn:hover { color: var(--color-primary); }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #F1F5F9;
+  }
+  
+  .hidden { display: none; }
 </style>

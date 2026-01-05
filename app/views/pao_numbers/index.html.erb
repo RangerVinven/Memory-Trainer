@@ -1,11 +1,29 @@
 <div class="container" data-controller="autosave">
   <div class="header-row">
-    <%= link_to "Back", root_path, class: "btn-secondary" %>
+    <div><%= link_to "Back", root_path, class: "btn-secondary" %></div>
     <h1>PAO System (Numbers)</h1>
-    <span class="status-msg" data-autosave-target="status"></span>
-    <!-- Save button is mostly visual now as autosave handles it, but keeps it for explicit action -->
-    <button class="btn-primary" onclick="document.querySelector('form').requestSubmit()">Save Changes</button>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="status-msg" data-autosave-target="status"></span>
+      <button class="btn-primary" onclick="document.querySelector('form').requestSubmit()">Save Changes</button>
+    </div>
   </div>
+
+<style>
+  .header-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .header-row > :nth-child(2) { text-align: center; }
+  .header-row > :last-child { justify-self: end; }
+  
+  .status-msg {
+    color: var(--color-text-light);
+    font-style: italic;
+    font-weight: 600;
+  }
+</style>
 
   <!-- Single Digits Form -->
   <h3>Single Digits (0-9)</h3>

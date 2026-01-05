@@ -1,19 +1,19 @@
 <h1>Start New Training</h1>
-<div class="card" style="max-width: 500px; margin: 0 auto;">
+<div class="card no-hover" style="max-width: 500px; margin: 0 auto;">
   <%= form_with model: @session, local: true do |f| %>
     <div class="field-group">
       <%= f.label :training_type %>
-      <%= f.select :training_type, [['Number', 'number'], ['Card', 'card']], {}, { class: "form-control" } %>
+      <%= f.select :training_type, [['Number', 'number'], ['Card', 'card']], {}, { class: "form-control", id: "training-type-select", onchange: "updateDefaults()" } %>
     </div>
     
     <div class="field-group">
-      <%= f.label :item_count, "Total Items (Numbers or Cards)" %>
-      <%= f.number_field :item_count, value: 20, class: "form-control" %>
+      <%= f.label :item_count, "Total Items" %>
+      <%= f.number_field :item_count, value: 20, class: "form-control", id: "item-count-input" %>
     </div>
 
     <div class="field-group">
       <%= f.label :batch_size, "Batch Size (Items per screen)" %>
-      <%= f.number_field :batch_size, value: 5, class: "form-control", min: 1 %>
+      <%= f.number_field :batch_size, value: 5, class: "form-control", min: 1, id: "batch-size-input" %>
       <small>How many items do you want to see at once?</small>
     </div>
 
@@ -23,7 +23,24 @@
   <% end %>
 </div>
 
+<script>
+  function updateDefaults() {
+    const type = document.getElementById("training-type-select").value;
+    const countInput = document.getElementById("item-count-input");
+    const batchInput = document.getElementById("batch-size-input");
+    
+    if (type === "card") {
+      countInput.value = 52;
+      batchInput.value = 3;
+    } else {
+      countInput.value = 20;
+      batchInput.value = 5;
+    }
+  }
+</script>
+
 <style>
+  .no-hover:hover { transform: none !important; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important; }
   .field-group { margin-bottom: 20px; text-align: left; }
   .field-group label { font-weight: 600; color: var(--color-primary); display: block; margin-bottom: 5px; }
   .large { width: 100%; font-size: 1.1rem; padding: 12px; }

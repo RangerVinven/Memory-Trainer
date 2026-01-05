@@ -23,6 +23,28 @@ class LociController < ApplicationController
     head :ok
   end
 
+  def move_up
+    @locus = @memory_palace.loci.find(params[:id])
+    @locus.move_higher
+    redirect_to @memory_palace
+  end
+
+  def move_down
+    @locus = @memory_palace.loci.find(params[:id])
+    @locus.move_lower
+    redirect_to @memory_palace
+  end
+
+  def sort
+    # params[:loci_ids] is an array of IDs in the new order
+    if params[:loci_ids].is_a?(Array)
+      params[:loci_ids].each_with_index do |id, index|
+        @memory_palace.loci.where(id: id).update_all(position: index + 1)
+      end
+    end
+    head :ok
+  end
+
   private
 
   def set_memory_palace

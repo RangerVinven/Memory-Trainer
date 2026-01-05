@@ -1,9 +1,11 @@
 <div class="container" data-controller="autosave">
   <div class="header-row">
-    <%= link_to "Back", root_path, class: "btn-secondary" %>
+    <div><%= link_to "Back", root_path, class: "btn-secondary" %></div>
     <h1>PAO System (Cards)</h1>
-    <span class="status-msg" data-autosave-target="status"></span>
-    <button class="btn-primary" onclick="document.querySelector('form').requestSubmit()">Save Changes</button>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="status-msg" data-autosave-target="status"></span>
+      <button class="btn-primary" onclick="document.querySelector('form').requestSubmit()">Save Changes</button>
+    </div>
   </div>
 
   <%= form_with url: bulk_update_pao_cards_path, method: :patch, data: { action: "change->autosave#change ajax:success->autosave#onPostSuccess" } do |form| %>
@@ -20,7 +22,7 @@
         <% @pao_cards.each do |pao| %>
           <%= fields_for "pao_cards[#{pao.id}]", pao do |f| %>
             <tr>
-              <td><%= render_card("#{pao.rank[0].upcase}#{pao.suit[0].upcase}", width: 40, height: 56) %></td>
+              <td style="text-align: center;"><%= format_pao_card(pao) %></td>
               <td><%= f.text_field :person %></td>
               <td><%= f.text_field :action %></td>
               <td><%= f.text_field :object %></td>
@@ -34,24 +36,20 @@
 
 <script>
   window.addEventListener("beforeunload", function (e) {
-    // Basic detection for unsaved changes if controller is dirty
     const el = document.querySelector('[data-controller="autosave"]');
-    if(el) {
-       // Accessing the controller instance directly is tricky in vanilla JS without Stimulus API
-       // So we rely on the controller's own beforeUnload implementation if possible
-       // But Stimulus controllers don't automatically bind to window.beforeunload unless we add it.
-       // We added it in the controller code!
-    }
   });
 </script>
 
 <style>
   .header-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     margin-bottom: 20px;
   }
+  .header-row > :nth-child(2) { text-align: center; }
+  .header-row > :last-child { justify-self: end; }
+
   .status-msg {
     color: var(--color-text-light);
     font-style: italic;
