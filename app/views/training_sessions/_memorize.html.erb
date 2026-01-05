@@ -15,7 +15,7 @@
         <% if session.training_type == 'card' %>
           <div class="cards-wrapper">
             <% batch.each do |card_code| %>
-              <%= render_card(card_code) %>
+              <%= render_card(card_code, width: 160, height: 224) %>
             <% end %>
           </div>
         <% else %>

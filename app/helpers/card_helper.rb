@@ -1,6 +1,13 @@
 module CardHelper
-  def render_card(card_code)
-    # card_code is like "KH" (King of Hearts), "10S" (10 of Spades)
+  def render_card(card_code, options = {})
+    return "" if card_code.blank?
+    
+    # Defaults
+    width = options[:width] || 100
+    height = options[:height] || 140
+    opacity = options[:opacity] || 1.0
+    
+    # card_code is like "KH", "10S"
     rank = card_code[0..-2]
     suit = card_code[-1]
 
@@ -9,13 +16,15 @@ module CardHelper
                 when 'D' then '♦'
                 when 'S' then '♠'
                 when 'C' then '♣'
+                else '?'
                 end
 
     color = (suit == 'H' || suit == 'D') ? '#d9534f' : '#292b2c'
     
     # SVG Representation
     svg = <<~SVG
-      <svg width="100" height="140" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg" style="background: white; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); border: 1px solid #ccc; display: inline-block; margin: 5px;">
+      <svg width="#{width}" height="#{height}" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg" 
+           style="background: white; border-radius: 8px; box-shadow: 1px 1px 4px rgba(0,0,0,0.2); border: 1px solid #ccc; display: inline-block; opacity: #{opacity};">
         <!-- Border -->
         <rect x="2" y="2" width="96" height="136" rx="6" fill="none" stroke="#{color}" stroke-width="2"/>
         
@@ -23,8 +32,8 @@ module CardHelper
         <text x="8" y="20" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#{color}">#{rank}</text>
         <text x="8" y="38" font-family="Arial, sans-serif" font-size="16" fill="#{color}">#{suit_icon}</text>
 
-        <!-- Center -->
-        <text x="50" y="80" font-family="Arial, sans-serif" font-size="40" text-anchor="middle" dominant-baseline="central" fill="#{color}">#{suit_icon}</text>
+        <!-- Center (Made larger as requested) -->
+        <text x="50" y="80" font-family="Arial, sans-serif" font-size="60" text-anchor="middle" dominant-baseline="central" fill="#{color}">#{suit_icon}</text>
 
         <!-- Bottom Right (Rotated) -->
         <g transform="rotate(180, 92, 120)">
