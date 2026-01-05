@@ -13,7 +13,7 @@
   <div class="grid" style="grid-template-columns: 2fr 1fr; align-items: start;">
     
     <!-- Loci List -->
-    <div class="card">
+    <div class="card no-hover">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h3>Locations</h3>
         <button class="btn-secondary" data-action="reorder#open">Reorder</button>
@@ -21,7 +21,7 @@
 
       <div class="loci-list">
         <% @memory_palace.loci.each_with_index do |locus, index| %>
-          <div class="locus-item">
+          <div class="locus-item no-hover">
             <span class="locus-index"><%= index + 1 %></span>
             <div class="locus-content">
               <strong><%= locus.name.presence || "Location #{index + 1}" %></strong>
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Add Locus Form -->
-    <div class="card sticky-form">
+    <div class="card sticky-form no-hover">
       <h3>Add Location</h3>
       <%= form_with model: [@memory_palace, @locus], local: true do |form| %>
         <div class="field-group">
