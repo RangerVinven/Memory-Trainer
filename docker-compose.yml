@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    # This command configures Caddy directly without needing a separate Caddyfile
+    command: caddy reverse-proxy --from https://memory-trainer.danielmcpherson.dev --to memory-trainer:80
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - app_network
+
+  memory-trainer:
+    image: vinven/memory-trainer:latest
+    container_name: memory-trainer
+    restart: unless-stopped
+    networks:
+      - app_network
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  app_network:
