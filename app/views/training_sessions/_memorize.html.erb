@@ -31,12 +31,14 @@
     <p class="instruction">Press <span class="key-hint">Space</span> for next</p>
     <div class="progress" data-training-target="progress">Batch 1 / <%= batches.size %></div>
     
-    <button class="btn-primary" data-action="training#next">Next Batch</button>
-    
-    <%= form_with model: session, method: :patch, local: true, data: { training_target: "finishForm" } do |f| %>
-      <input type="hidden" name="duration" id="duration-input" data-training-target="durationInput">
-      <button type="button" class="btn-secondary" data-action="training#finish">Finish Early</button>
-    <% end %>
+    <div class="btn-group">
+      <button class="btn-primary" data-action="training#next" style="width: 100%;">Next Batch</button>
+      
+      <%= form_with model: session, method: :patch, local: true, data: { training_target: "finishForm" }, style: "width: 100%;" do |f| %>
+        <input type="hidden" name="duration" id="duration-input" data-training-target="durationInput">
+        <button type="button" class="btn-secondary" data-action="training#finish" style="width: 100%;">Finish Early</button>
+      <% end %>
+    </div>
   </div>
 </div>
 
@@ -67,6 +69,8 @@
     font-weight: bold;
     color: var(--color-primary);
     letter-spacing: 5px;
+    word-break: break-all;
+    max-width: 100%;
   }
 
   .cards-wrapper {
@@ -74,10 +78,25 @@
     gap: 15px;
     flex-wrap: wrap;
     justify-content: center;
+    max-width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .numbers-wrapper { font-size: 2.5rem; letter-spacing: 2px; }
+    .cards-wrapper { gap: 8px; }
   }
 
   .controls {
     margin-top: 30px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
   }
 
   .key-hint {
@@ -89,14 +108,4 @@
   }
   
   .instruction { color: #666; margin-bottom: 10px; }
-  
-  .btn-secondary {
-    background: transparent;
-    color: var(--color-text-light);
-    border: 1px solid #ccc;
-    padding: 8px 16px;
-    border-radius: 4px;
-    margin-top: 10px;
-    cursor: pointer;
-  }
 </style>

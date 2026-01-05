@@ -23,6 +23,53 @@
     font-style: italic;
     font-weight: 600;
   }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .header-row {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+    .header-row > :last-child { justify-self: center; }
+
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    tr {
+      margin-bottom: 15px;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 10px;
+      background: white;
+    }
+    td {
+      padding: 5px 0;
+      border: none;
+      display: flex;
+      align-items: center;
+    }
+    td:before {
+      content: attr(data-label);
+      font-weight: bold;
+      width: 80px;
+      display: inline-block;
+      color: #64748B;
+    }
+    /* First TD is the number, make it prominent */
+    td:first-child {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--color-primary);
+      justify-content: center;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+    }
+    td:first-child:before { content: none; }
+    
+    input[type="text"] { width: 100%; margin-bottom: 0; }
+  }
 </style>
 
   <!-- Single Digits Form -->
@@ -42,9 +89,9 @@
           <%= fields_for "pao_digits[#{pao.id}]", pao do |f| %>
             <tr>
               <td><%= pao.number %></td>
-              <td><%= f.text_field :person %></td>
-              <td><%= f.text_field :action %></td>
-              <td><%= f.text_field :object %></td>
+              <td data-label="Person"><%= f.text_field :person, placeholder: "Person" %></td>
+              <td data-label="Action"><%= f.text_field :action, placeholder: "Action" %></td>
+              <td data-label="Object"><%= f.text_field :object, placeholder: "Object" %></td>
             </tr>
           <% end %>
         <% end %>
@@ -71,9 +118,9 @@
           <%= fields_for "pao_numbers[#{pao.id}]", pao do |f| %>
             <tr>
               <td><%= pao.number.to_s.rjust(2, '0') %></td>
-              <td><%= f.text_field :person %></td>
-              <td><%= f.text_field :action %></td>
-              <td><%= f.text_field :object %></td>
+              <td data-label="Person"><%= f.text_field :person, placeholder: "Person" %></td>
+              <td data-label="Action"><%= f.text_field :action, placeholder: "Action" %></td>
+              <td data-label="Object"><%= f.text_field :object, placeholder: "Object" %></td>
             </tr>
           <% end %>
         <% end %>
