@@ -34,9 +34,9 @@
     <div class="btn-group">
       <button class="btn-primary" data-action="training#next" style="width: 100%;">Next Batch</button>
       
-      <%= form_with model: session, method: :patch, local: true, data: { training_target: "finishForm" }, style: "width: 100%;" do |f| %>
+      <%= form_with model: session, method: :patch, local: true, data: { training_target: "finishForm", action: "submit->training#finish" }, style: "width: 100%;" do |f| %>
         <input type="hidden" name="duration" id="duration-input" data-training-target="durationInput">
-        <button type="button" class="btn-secondary" data-action="training#finish" style="width: 100%;">Finish Early</button>
+        <%= f.submit "Finish Early", class: "btn-secondary", style: "width: 100%; cursor: pointer;" %>
       <% end %>
     </div>
   </div>

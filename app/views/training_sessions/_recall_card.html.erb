@@ -22,8 +22,8 @@
     <% end %>
   </div>
 
-  <!-- The Keyboard -->
-  <div class="keyboard">
+  <!-- Desktop Keyboard -->
+  <div class="keyboard desktop-only">
     <div class="ranks">
       <% %w[2 3 4 5 6 7 8 9 10 J Q K A].each do |rank| %>
         <div class="key-column">
@@ -49,6 +49,42 @@
     
     <div class="actions">
       <button type="button" class="btn-secondary" data-action="recall#clearSlot">Clear Slot</button>
+    </div>
+  </div>
+
+  <!-- Mobile Keyboard (Split Input) -->
+  <div class="keyboard mobile-only">
+    <!-- Rank Selector -->
+    <div class="mobile-ranks-scroll">
+      <% %w[2 3 4 5 6 7 8 9 10 J Q K A].each do |rank| %>
+        <button type="button" 
+                class="mobile-rank-btn" 
+                data-recall-target="mobileRank"
+                data-action="recall#selectRank" 
+                data-rank="<%= rank %>">
+          <%= rank %>
+        </button>
+      <% end %>
+    </div>
+
+    <!-- Suit Selector -->
+    <div class="mobile-suits-row">
+      <% %w[S H D C].each do |suit| %>
+        <% 
+           color = (suit == 'H' || suit == 'D') ? 'red' : 'black'
+           icon = case suit; when 'S' then '♠'; when 'H' then '♥'; when 'D' then '♦'; when 'C' then '♣'; end
+        %>
+        <button type="button" 
+                class="mobile-suit-btn <%= color %>"
+                data-action="recall#selectSuit"
+                data-suit="<%= suit %>">
+          <%= icon %>
+        </button>
+      <% end %>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-secondary" data-action="recall#clearSlot" style="width: 100%;">Clear Slot</button>
     </div>
   </div>
 </div>
@@ -86,7 +122,7 @@
     border-color: #94a3b8;
   }
 
-  /* Keyboard */
+  /* Keyboard Container */
   .keyboard {
     position: fixed;
     bottom: 0; left: var(--sidebar-width); right: 0;
@@ -98,6 +134,7 @@
   }
   @media (max-width: 768px) { .keyboard { left: 0; } }
 
+  /* Desktop Styles */
   .ranks {
     display: flex;
     justify-content: center;
@@ -136,6 +173,65 @@
   
   .actions { text-align: center; margin-top: 10px; }
   
+  /* Mobile Styles */
+  .mobile-ranks-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 15px;
+  }
+  .mobile-ranks-scroll::-webkit-scrollbar { display: none; } /* Hide scrollbar for cleaner look */
+
+  .mobile-rank-btn {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #334155;
+    border-radius: 8px;
+    box-shadow: 0 2px 0 #cbd5e1;
+  }
+  .mobile-rank-btn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: none;
+    transform: translateY(2px);
+  }
+
+  .mobile-suits-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .mobile-suit-btn {
+    flex: 1;
+    height: 60px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 0 #cbd5e1;
+  }
+  .mobile-suit-btn:active { transform: translateY(2px); box-shadow: none; }
+  .mobile-suit-btn.red { color: #dc2626; }
+  .mobile-suit-btn.black { color: #1e293b; }
+
+  /* Toggles */
+  .mobile-only { display: none !important; }
+  
+  @media (max-width: 768px) {
+    .desktop-only { display: none !important; }
+    .mobile-only { display: block !important; }
+  }
+
   /* Make main content pad for keyboard */
-  .main-content { padding-bottom: 250px; }
+  .main-content { padding-bottom: 300px; }
 </style>

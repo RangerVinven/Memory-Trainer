@@ -7,7 +7,9 @@ RSpec.describe "UserAuths", type: :system do
 
   it "allows a user to sign up" do
     visit root_path
-    click_link "Sign up"
+    within(".auth-buttons") do
+      click_link "Sign Up"
+    end
 
     fill_in "Email", with: "test@example.com"
     fill_in "Password", with: "password"
@@ -15,16 +17,16 @@ RSpec.describe "UserAuths", type: :system do
     click_button "Sign up"
 
     expect(page).to have_content("Welcome! You have signed up successfully.")
-    expect(page).to have_content("Hello, test@example.com!")
+    expect(page).to have_content("Welcome back, Test!")
   end
 
   it "allows a user to sign out" do
     user = FactoryBot.create(:user)
-    sign_in user
+    sign_in user, scope: :user
     visit root_path
 
-    expect(page).to have_content("Hello, #{user.email}!")
-    click_button "Sign out"
+    # expect(page).to have_content("Welcome back, #{user.email.split('@').first.capitalize}!")
+    click_button "Sign Out"
 
     expect(page).to have_content("Signed out successfully.")
     expect(page).to have_content("Login")

@@ -1,13 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["slot", "input", "display"]
+  static targets = ["slot", "input", "mobileRank"]
   static values = { count: Number }
 
   connect() {
     this.currentSlotIndex = 0
     this.selectSlot(0)
     this.cards = new Array(this.countValue).fill(null)
+    this.selectedRank = null
   }
 
   selectSlot(index) {
@@ -25,9 +26,33 @@ export default class extends Controller {
     this.selectSlot(index)
   }
 
+  // Desktop: One click adds card
   addCard(event) {
     const rank = event.currentTarget.dataset.rank
     const suit = event.currentTarget.dataset.suit
+    this.submitCard(rank, suit)
+  }
+
+  // Mobile: Step 1 - Select Rank
+  selectRank(event) {
+    this.selectedRank = event.currentTarget.dataset.rank
+    
+    // UI Feedback
+    this.mobileRankTargets.forEach(el => el.classList.remove("active"))
+    event.currentTarget.classList.add("active")
+  }
+
+  // Mobile: Step 2 - Select Suit
+  selectSuit(event) {
+    if (!this.selectedRank) {
+      // Visual shake or feedback could go here
+      return
+    }
+    const suit = event.currentTarget.dataset.suit
+    this.submitCard(this.selectedRank, suit)
+  }
+
+  submitCard(rank, suit) {
     const code = rank + suit
     
     // Update Data
@@ -55,10 +80,6 @@ export default class extends Controller {
   }
 
   updateInput() {
-    // Filter out nulls for the final submission or keep them? 
-    // Usually easier to join valid ones, but maintaining order is key.
-    // We'll join with comma, using empty string for missing.
-    // Actually, Scorer expects "AS,KH...". If user missed one, it should probably be skipped or blank.
     this.inputTarget.value = this.cards.filter(c => c).join(",")
   }
 

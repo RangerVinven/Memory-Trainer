@@ -82,9 +82,14 @@ export default class extends Controller {
     this.progressTarget.textContent = `Batch ${this.currentIndex + 1} / ${total}`
   }
 
-  finish() {
+  finish(event) {
+    // If called via event (submit), just populate duration and let it proceed
     const elapsed = Math.floor((Date.now() - this.startTime) / 1000)
     this.durationInputTarget.value = elapsed
-    this.finishFormTarget.submit()
+    
+    // If called manually (e.g. from next()), we need to submit the form
+    if (!event) {
+      this.finishFormTarget.requestSubmit()
+    }
   }
 }

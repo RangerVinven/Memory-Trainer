@@ -12,14 +12,14 @@ RSpec.describe "TrainingFlow", type: :system do
     visit new_training_session_path
     
     select "Number", from: "Training type"
-    fill_in "Length / Count", with: "5"
-    click_button "Start Training"
+    fill_in "Total Items", with: "5"
+    click_button "Begin Training"
 
-    expect(page).to have_content("Memorize This!")
+    expect(page).to have_content("Press Space for next")
     # Get the number from the page
-    number = find(".data-box").text
+    number = find(".numbers-wrapper").text
     
-    click_button "I'm Done"
+    click_button "Finish Early"
 
     expect(page).to have_content("Recall Phase")
     fill_in "Your Recall Input", with: number

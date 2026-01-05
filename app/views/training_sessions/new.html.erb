@@ -2,17 +2,17 @@
 <div class="card no-hover" style="max-width: 500px; margin: 0 auto;">
   <%= form_with model: @session, local: true do |f| %>
     <div class="field-group">
-      <%= f.label :training_type %>
+      <%= f.label :training_type, for: "training-type-select" %>
       <%= f.select :training_type, [['Number', 'number'], ['Card', 'card']], {}, { class: "form-control", id: "training-type-select", onchange: "updateDefaults()" } %>
     </div>
     
     <div class="field-group">
-      <%= f.label :item_count, "Total Items" %>
+      <%= f.label :item_count, "Total Items", for: "item-count-input" %>
       <%= f.number_field :item_count, value: 20, class: "form-control", id: "item-count-input" %>
     </div>
 
     <div class="field-group">
-      <%= f.label :batch_size, "Batch Size (Items per screen)" %>
+      <%= f.label :batch_size, "Batch Size (Items per screen)", for: "batch-size-input" %>
       <%= f.number_field :batch_size, value: 5, class: "form-control", min: 1, id: "batch-size-input" %>
       <small>How many items do you want to see at once?</small>
     </div>

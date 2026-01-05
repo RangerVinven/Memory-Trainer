@@ -31,7 +31,10 @@ class PaoNumbersController < ApplicationController
 
   def bulk_update
     update_count = 0
-    params[:pao_numbers].each do |id, attributes|
+    # Permit attributes for each ID
+    pao_params = params.require(:pao_numbers).permit!
+    
+    pao_params.each do |id, attributes|
       pao = current_user.pao_numbers.find_by(id: id)
       if pao && pao.update(attributes)
         update_count += 1
@@ -40,7 +43,7 @@ class PaoNumbersController < ApplicationController
     
     respond_to do |format|
       format.html { redirect_to pao_numbers_path, notice: "Updated #{update_count} entries." }
-      format.turbo_stream { render turbo_stream: turbo_stream.replace("flash", partial: "layouts/flash") } # Naive implementation
+      format.turbo_stream { render turbo_stream: turbo_stream.replace("flash", partial: "layouts/flash") }
     end
   end
 end
