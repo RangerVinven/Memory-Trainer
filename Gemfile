@@ -72,3 +72,5 @@ group :test do
 end
 
 gem "acts_as_list", "~> 1.2"
+
+gem "rack-cors", "~> 3.0"
