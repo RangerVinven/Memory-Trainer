@@ -25,6 +25,11 @@ class _PaoCardsListScreenState extends State<PaoCardsListScreen> {
 
   // Suit order: Spades, Hearts, Clubs, Diamonds (Swapped 3rd/4th from standard S,H,D,C)
   final List<String> _suitOrder = ['spades', 'hearts', 'clubs', 'diamonds'];
+  
+  // Rank order: Ace, 2-10, Jack, Queen, King
+  final List<String> _rankOrder = [
+    'ace', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'jack', 'queen', 'king'
+  ];
 
   @override
   void initState() {
@@ -40,12 +45,12 @@ class _PaoCardsListScreenState extends State<PaoCardsListScreen> {
 
   Future<void> _loadCards() async {
     final cards = await _paoService.getCards();
-    // Sort cards based on custom suit order
+    // Sort cards based on custom suit order AND rank order
     cards.sort((a, b) {
       int suitComparison = _suitOrder.indexOf(a.suit).compareTo(_suitOrder.indexOf(b.suit));
       if (suitComparison != 0) return suitComparison;
-      // Define rank order if needed, but assuming API order is fine or handled similarly
-      return 0; // Keep existing rank order
+      
+      return _rankOrder.indexOf(a.rank).compareTo(_rankOrder.indexOf(b.rank));
     });
 
     if (mounted) {

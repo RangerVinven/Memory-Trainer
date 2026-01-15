@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../models/user.dart';
 import 'api_client.dart';
 
 class AuthService {
@@ -46,6 +47,44 @@ class AuthService {
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       debugPrint('Signup Error: $e');
+      return false;
+    }
+  }
+
+  Future<User?> getCurrentUser() async {
+    try {
+      final response = await _api.get('/api/v1/auth/me');
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data['user']);
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Get User Error: $e');
+      return null;
+    }
+  }
+
+  Future<bool> updateProfile({
+    required String email,
+    required String currentPassword,
+    String? password,
+    String? passwordConfirmation,
+  }) async {
+    try {
+      final data = {
+        'user': {
+          'email': email,
+          'current_password': currentPassword,
+          if (password != null && password.isNotEmpty) 'password': password,
+          if (passwordConfirmation != null && passwordConfirmation.isNotEmpty)
+            'password_confirmation': passwordConfirmation,
+        }
+      };
+
+      final response = await _api.put('/api/v1/auth/profile', data: data);
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Update Profile Error: $e');
       return false;
     }
   }

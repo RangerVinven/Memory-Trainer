@@ -44,12 +44,21 @@ class _MemoryPalacesListScreenState extends State<MemoryPalacesListScreen> {
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
               autofocus: true,
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description (Optional)'),
+              decoration: const InputDecoration(
+                labelText: 'Description (Optional)',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
             ),
           ],
         ),
@@ -70,6 +79,11 @@ class _MemoryPalacesListScreenState extends State<MemoryPalacesListScreen> {
                 }
               }
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3B82F6),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
             child: const Text('Create'),
           ),
         ],
@@ -103,7 +117,14 @@ class _MemoryPalacesListScreenState extends State<MemoryPalacesListScreen> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _createPalace,
-                        child: const Text('Create Your First Palace'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF3B82F6),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
+                          elevation: 2,
+                        ),
+                        child: const Text('Create Your First Palace', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -124,9 +145,18 @@ class _MemoryPalacesListScreenState extends State<MemoryPalacesListScreen> {
                           palace.name,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF334155)),
                         ),
-                        subtitle: palace.description != null && palace.description!.isNotEmpty
-                            ? Text(palace.description!, style: const TextStyle(color: Color(0xFF64748B)))
-                            : null,
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (palace.description != null && palace.description!.isNotEmpty)
+                              Text(palace.description!, style: const TextStyle(color: Color(0xFF64748B))),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${palace.loci.length} Locations',
+                              style: const TextStyle(color: Color(0xFF3B82F6), fontWeight: FontWeight.w500, fontSize: 13),
+                            ),
+                          ],
+                        ),
                         trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFF94A3B8)),
                         onTap: () async {
                           await Navigator.push(

@@ -161,26 +161,51 @@ class _LoginScreenState extends State<LoginScreen> {
                         fillColor: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: Checkbox(
-                            value: _rememberMe, 
-                            onChanged: (v) {
-                              setState(() {
-                                _rememberMe = v ?? false;
-                              });
-                            },
-                            activeColor: _primaryColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigate to Forgot Password
+                        },
+                        child: const Text(
+                          "Forgot password?",
+                          style: TextStyle(
+                            color: _primaryColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        const Text('Remember me', style: TextStyle(color: _textColor)),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _rememberMe = !_rememberMe;
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(4),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: Checkbox(
+                              value: _rememberMe, 
+                              onChanged: (v) {
+                                setState(() {
+                                  _rememberMe = v ?? false;
+                                });
+                              },
+                              activeColor: _primaryColor,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text('Remember me', style: TextStyle(color: _textColor)),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
@@ -212,29 +237,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Text(
+                          "Don't have an account? ",
+                          style: TextStyle(color: _textLightColor),
+                        ),
                         GestureDetector(
                           onTap: () {
-                            // Navigate to Sign Up
-                             Navigator.pushReplacement(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => const SignupScreen()),
                             );
                           },
                           child: const Text(
                             "Sign up",
-                            style: TextStyle(
-                              color: _primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                         GestureDetector(
-                          onTap: () {
-                            // Navigate to Forgot Password
-                          },
-                          child: const Text(
-                            "Forgot password?",
                             style: TextStyle(
                               color: _primaryColor,
                               fontWeight: FontWeight.w600,
