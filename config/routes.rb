@@ -36,6 +36,40 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
+  # API Routes
+  namespace :api do
+    namespace :v1 do
+      devise_scope :user do
+        post 'auth/login', to: 'auth/sessions#create'
+        post 'auth/signup', to: 'auth/registrations#create'
+        put 'auth/profile', to: 'auth/registrations#update'
+        get 'auth/me', to: 'auth/sessions#show'
+      end
+      
+      resources :pao_cards, only: [:index] do
+        collection do
+          patch :bulk_update
+        end
+      end
+
+      resources :pao_numbers, only: [:index] do
+        collection do
+          get :digits
+          patch :bulk_update
+          patch :bulk_update_digits
+        end
+      end
+
+      resources :memory_palaces do
+        resources :loci, only: [:create, :update, :destroy] do
+          member do
+            patch :sort
+          end
+        end
+      end
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "pages#home"
 

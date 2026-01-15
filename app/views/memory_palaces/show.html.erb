@@ -1,4 +1,4 @@
-<div class="container" data-controller="reorder" data-reorder-url-value="<%= sort_memory_palace_loci_path(@memory_palace) %>">
+<div class="container" data-controller="reorder locus-viewer" data-reorder-url-value="<%= sort_memory_palace_loci_path(@memory_palace) %>">
   <div class="header-row">
     <div>
       <h1 style="margin-bottom: 5px;"><%= @memory_palace.name %></h1>
@@ -21,15 +21,33 @@
 
       <div class="loci-list">
         <% @memory_palace.loci.each_with_index do |locus, index| %>
-          <div class="locus-item no-hover">
+          <div class="locus-item" 
+               data-action="click->locus-viewer#openView"
+               data-name="<%= locus.name.presence || "Location #{index + 1}" %>"
+               data-description="<%= locus.description %>"
+               data-information="<%= locus.information %>"
+               data-edit-url="<%= memory_palace_locus_path(@memory_palace, locus) %>"
+               style="cursor: pointer;">
             <span class="locus-index"><%= index + 1 %></span>
             <div class="locus-content">
-              <strong><%= locus.name.presence || "Location #{index + 1}" %></strong>
-              <p><%= locus.description %></p>
+              <strong class="truncate"><%= locus.name.presence || "Location #{index + 1}" %></strong>
+              <p class="truncate"><%= locus.description %></p>
+              <% if locus.information.present? %>
+                <p class="truncate" style="font-size: 0.85rem; color: #94A3B8; margin-top: 4px;">Info: <%= locus.information %></p>
+              <% end %>
             </div>
-            <%= button_to memory_palace_locus_path(@memory_palace, locus), method: :delete, class: "icon-btn delete-btn", data: { turbo_confirm: "Are you sure?" } do %>
-              <i class="fas fa-trash"></i>
-            <% end %>
+            <button class="icon-btn" style="color: var(--color-primary);" onclick="event.stopPropagation();" data-action="click->locus-viewer#openEdit" 
+                    data-url="<%= memory_palace_locus_path(@memory_palace, locus) %>"
+                    data-name="<%= j locus.name %>" 
+                    data-description="<%= j locus.description %>" 
+                    data-information="<%= j locus.information %>">
+              <i class="fas fa-edit"></i>
+            </button>
+            <div onclick="event.stopPropagation();">
+              <%= button_to memory_palace_locus_path(@memory_palace, locus), method: :delete, class: "icon-btn delete-btn", data: { turbo_confirm: "Are you sure?" } do %>
+                <i class="fas fa-trash"></i>
+              <% end %>
+            </div>
           </div>
         <% end %>
         
@@ -51,6 +69,11 @@
         <div class="field-group">
           <%= form.label :description, "Image / Description" %>
           <%= form.text_area :description, placeholder: "Describe the mental image...", rows: 3 %>
+        </div>
+
+        <div class="field-group">
+          <%= form.label :information, "Information" %>
+          <%= form.text_area :information, placeholder: "What are you memorizing here?", rows: 3 %>
         </div>
 
         <%= form.submit "Add Locus", class: "btn-primary large" %>
@@ -81,6 +104,61 @@
       </div>
     </div>
   </div>
+
+  <!-- View Locus Modal -->
+  <div class="sidebar-overlay hidden" data-locus-viewer-target="viewModal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+        <h3 data-locus-viewer-target="viewName" style="margin: 0;"></h3>
+        <button class="icon-btn" data-locus-viewer-target="viewEditBtn" data-action="click->locus-viewer#openEditFromView" style="color: var(--color-primary);">
+          <i class="fas fa-edit"></i>
+        </button>
+      </div>
+      
+      <div style="margin-bottom: 16px;">
+        <span style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 1px;">Image</span>
+        <p data-locus-viewer-target="viewDescription" style="margin-top: 4px; color: #334155; line-height: 1.5; white-space: pre-wrap;"></p>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <span style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 1px;">Information</span>
+        <p data-locus-viewer-target="viewInfo" style="margin-top: 4px; color: #334155; line-height: 1.5; white-space: pre-wrap;"></p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" data-action="locus-viewer#closeView">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Locus Modal -->
+  <div class="sidebar-overlay hidden" data-locus-viewer-target="editModal">
+    <div class="modal-card">
+      <h3 style="margin-bottom: 20px;">Edit Location</h3>
+      
+      <%= form_with url: "", method: :patch, id: "edit-locus-form", local: true, data: { locus_viewer_target: "form" } do |form| %>
+        <div class="field-group">
+          <%= form.label :name, "Location Name" %>
+          <%= form.text_field :name, id: "edit-locus-name", data: { locus_viewer_target: "editName" } %>
+        </div>
+
+        <div class="field-group">
+          <%= form.label :description, "Image" %>
+          <%= form.text_area :description, id: "edit-locus-description", rows: 3, data: { locus_viewer_target: "editDescription" } %>
+        </div>
+
+        <div class="field-group">
+          <%= form.label :information, "Information" %>
+          <%= form.text_area :information, id: "edit-locus-information", rows: 3, data: { locus_viewer_target: "editInfo" } %>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-action="locus-viewer#closeEdit">Cancel</button>
+          <%= form.submit "Save Changes", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -101,7 +179,6 @@
     .btn-secondary { flex: 1; text-align: center; }
     
     .mp-grid { grid-template-columns: 1fr; }
-    /* Removed sticky and order: -1 logic so form stays at bottom */
   }
   
   .loci-list { display: flex; flex-direction: column; gap: 15px; }
@@ -113,6 +190,12 @@
     background: #F8FAFC;
     border: 1px solid #E2E8F0;
     border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .locus-item:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
   
   .locus-index {
@@ -124,9 +207,18 @@
     margin-right: 15px;
   }
   
-  .locus-content { flex: 1; }
+  .locus-content { flex: 1; overflow: hidden; } /* Ensure overflow hidden for truncation */
   .locus-content strong { display: block; color: #334155; }
   .locus-content p { margin: 2px 0 0; font-size: 0.9rem; color: #64748B; }
+  
+  /* Truncation Class */
+  .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+  }
   
   .icon-btn { border: none; background: none; cursor: pointer; padding: 8px; border-radius: 4px; transition: all 0.2s; }
   .delete-btn { color: #CBD5E1; }

@@ -391,10 +391,27 @@ tr:last-child td { border-bottom: none; }
 .auth-links {
   margin-top: 24px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   font-size: 0.9rem;
 }
-.auth-links a { color: var(--color-primary); font-weight: 500; }
-.auth-links a:hover { text-decoration: underline; }
+
+.auth-links a { 
+  color: var(--color-text-light); 
+  text-decoration: none; 
+  transition: color 0.2s;
+}
+
+.auth-links a:hover { 
+  color: var(--color-primary); 
+  text-decoration: underline; 
+}
+
+.auth-links .primary-link {
+  color: var(--color-primary);
+  font-weight: 600;
+}
 
 /* Mobile Responsive */
 @media (max-width: 768px) {

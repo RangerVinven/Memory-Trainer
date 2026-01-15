@@ -7,4 +7,11 @@ class PaoCard < ApplicationRecord
   validates :suit, presence: true
   validates :rank, presence: true
   validates :rank, uniqueness: { scope: [:user_id, :suit] }
+
+  def as_json(options = {})
+    super(options).merge({
+      'suit' => suit,
+      'rank' => rank
+    })
+  end
 end

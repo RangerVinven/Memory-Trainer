@@ -11,6 +11,15 @@ class LociController < ApplicationController
     end
   end
 
+  def update
+    @locus = @memory_palace.loci.find(params[:id])
+    if @locus.update(locus_params)
+      redirect_to @memory_palace, notice: 'Locus updated.'
+    else
+      redirect_to @memory_palace, alert: 'Could not update locus.'
+    end
+  end
+
   def destroy
     @locus = @memory_palace.loci.find(params[:id])
     @locus.destroy
@@ -52,6 +61,6 @@ class LociController < ApplicationController
   end
 
   def locus_params
-    params.require(:locus).permit(:name, :description)
+    params.require(:locus).permit(:name, :description, :information)
   end
 end

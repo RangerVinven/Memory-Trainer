@@ -23,6 +23,11 @@ class PaoCardsController < ApplicationController
     end
 
     @pao_cards = current_user.pao_cards.order(:suit, :rank)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @pao_cards }
+    end
   end
 
   def bulk_update
@@ -34,7 +39,10 @@ class PaoCardsController < ApplicationController
       end
     end
     
-    redirect_to pao_cards_path, notice: "Updated #{update_count} entries."
+    respond_to do |format|
+      format.html { redirect_to pao_cards_path, notice: "Updated #{update_count} entries." }
+      format.json { render json: { message: "Updated #{update_count} entries." }, status: :ok }
+    end
   end
 
   private

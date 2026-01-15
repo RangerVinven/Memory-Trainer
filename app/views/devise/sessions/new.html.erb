@@ -12,14 +12,21 @@
       </div>
 
       <div class="field-group">
-        <%= f.label :password %>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <%= f.label :password %>
+          <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+            <%= link_to "Forgot password?", new_password_path(resource_name), style: "font-size: 0.85rem; color: var(--color-primary); font-weight: 500;" %>
+          <% end %>
+        </div>
         <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••" %>
       </div>
 
       <% if devise_mapping.rememberable? %>
-        <div class="field-group" style="display: flex; align-items: center; gap: 8px;">
-          <%= f.check_box :remember_me, style: "width: auto; margin: 0;" %>
-          <%= f.label :remember_me, style: "margin: 0; font-weight: normal;" %>
+        <div class="field-group">
+          <%= f.label :remember_me, style: "display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: normal; margin: 0;" do %>
+            <%= f.check_box :remember_me, style: "width: auto; margin: 0;" %>
+            <span>Remember me</span>
+          <% end %>
         </div>
       <% end %>
 
@@ -29,7 +36,9 @@
     <% end %>
 
     <div class="auth-links">
-      <%= render "devise/shared/links" %>
+      <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+        <span>Don't have an account? <%= link_to "Sign up", new_registration_path(resource_name), class: "primary-link" %></span>
+      <% end %>
     </div>
   </div>
 </div>
