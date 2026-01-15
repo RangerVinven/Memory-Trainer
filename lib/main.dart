@@ -11,7 +11,7 @@ class MemoryTrainerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Memory Trainer',
+      title: 'Memory Archive',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

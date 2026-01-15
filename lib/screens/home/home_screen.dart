@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../training/training_screen.dart';
+import '../training/training_menu_screen.dart';
 import '../systems/paos_screen.dart';
 import '../systems/palaces/memory_palaces_list_screen.dart';
 import '../settings/settings_screen.dart';
@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    TrainingScreen(),
+    TrainingMenuScreen(),
     PaosScreen(),
     MemoryPalacesListScreen(),
     SettingsScreen(),
